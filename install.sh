@@ -106,7 +106,6 @@ fetch_repo () {
 }
 
 onedark () {
-    echo "copy onedark colorschema"
     if [[ ! -d "$HOME/.vim/colors" ]]; then
         mkdir "$HOME/.vim/colors"
     fi
