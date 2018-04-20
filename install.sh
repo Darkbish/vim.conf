@@ -105,18 +105,43 @@ fetch_repo () {
     fi
 }
 
+onedark () {
+    echo "copy onedark colorschema"
+    if [[ ! -d "$HOME/.vim/colors" ]]; then
+        mkdir "$HOME/.vim/colors"
+    fi
+    if [[ ! -d "$HOME/.vim/autoload" ]]; then
+        mkdir "$HOME/.vim/autoload"
+    fi
+    onedark_path="$HOME/.vim/bundle/onedark.vim"
+    colorschema="${onedark_path}/colors/onedark.vim"
+    if [[ -f $colorschema ]]; then
+        cp $colorschema "$HOME/.vim/colors/onedark.vim"
+        echo -e "${Blue}Successfully copy colorschema onedark${Color_off}"
+    fi
+    load_path="${onedark_path}/autoload/onedark.vim"
+    if [[ -f $load_path ]]; then
+        cp $load_path "$HOME/.vim/autoload/onedark.vim"
+        echo -e "${Blue}Successfully copy autoload onedark${Color_off}"
+    fi
+}
+
 if [ $# -gt 0 ]
 then
     case $1 in
         uninstall)
             uninstall_vim
             exit 0
-            ;; 
+            ;;
         install)
-            # need_cmd 'git'
-            # fetch_repo
+            need_cmd 'git'
+            fetch_repo
             install_vim
             # echo -e "${Red}need'$1'(command 5 install_vim)${Color_off}"
+            exit 0
+            ;;
+        theme)
+            onedark
             exit 0
             ;;
         -h)
