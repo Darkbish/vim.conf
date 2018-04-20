@@ -22,22 +22,30 @@ echo 'Config Vim ...'
 install_vim () {
     if [[ -f "$HOME/.vimrc" ]]; then
         mv "$HOME/.vimrc" "$HOME/.vimrc.bak"
+	mv "$HOME/.vimrc.bundles" "$HOME/.vimrc.bundles.bak"
         echo -e "${Blue}BackUp $HOME/.vimrc${Color_off}"
     fi
 
     if [[ -d "$HOME/.vim" ]]; then
-        if [[ "$(readlink $HOME/.vim)" =~ \.vim\.conf$ ]]; then
+        if [[ "$(readlink $HOME/.vim)" =~ \.vim.conf$ ]]; then
             echo -e "${Blue}Installed plugins for vim${Color_off}"
         else
             mv "$HOME/.vim" "$HOME/.vim.bak"
             echo -e "${Blue}BackUp $HOME/.vim${Color_off}"
             ln -s "$HOME/.vim.conf" "$HOME/.vim"
+            ln -s "$HOME/.vim.conf/.vimrc" "$HOME/.vimrc"
+            ln -s "$HOME/.vim.conf/.vimrc.bundles" "$HOME/.vimrc.bundles"
             echo -e "${Blue}Installed plugins for vim${Color_off}"
         fi
     else
         ln -s "$HOME/.vim.conf" "$HOME/.vim"
         ln -s "$HOME/.vim.conf/.vimrc" "$HOME/.vimrc"
+        ln -s "$HOME/.vim.conf/.vimrc.bundles" "$HOME/.vimrc.bundles"
         echo -e "${Blue}Installed plugins for vim${Color_off}"
+    fi
+
+    if [[ ! -d "$HOME/.vim/bundle/Vundle.vim" ]]; then
+	    git clone https://github.com/VundleVim/Vundle.vim.git "$HOME/.vim/bundle/Vundle.vim"
     fi
 }
 
@@ -56,6 +64,14 @@ uninstall_vim () {
     if [[ -f "$HOME/.vimrc.bak" ]]; then
         mv "$HOME/.vimrc.bak" "$HOME/.vimrc"
         echo -e "${Blue}Recover $HOME/.vimrc${Color_off}"
+    else
+        rm -rf "$HOME/.vimrc"
+    fi
+    if [[ -f "$HOME/.vimrc.bundles.bak" ]]; then
+        mv "$HOME/.vimrc.bundles.bak" "$HOME/.vimrc.bundles"
+        echo -e "${Blue}Recover $HOME/.vimrc.bundles${Color_off}"
+    else
+        rm -rf "$HOME/.vimrc.bundles"
     fi
 }
 
@@ -97,8 +113,8 @@ then
             exit 0
             ;; 
         install)
-            need_cmd 'git'
-            fetch_repo
+            # need_cmd 'git'
+            # fetch_repo
             install_vim
             # echo -e "${Red}need'$1'(command 5 install_vim)${Color_off}"
             exit 0
