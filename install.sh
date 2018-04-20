@@ -6,7 +6,7 @@ Red='\033[0;31m'          # Red
 Blue='\033[0;34m'         # Blue
 Version='0.1.0'
 
-echo 'Con VimWeb ...'
+echo 'Config Vim ...'
 
 
 # 生成 .vim 文件夹
@@ -21,53 +21,53 @@ echo 'Con VimWeb ...'
 
 install_vim () {
     if [[ -f "$HOME/.vimrc" ]]; then
-        mv "$HOME/.vimrc" "$HOME/.vimrc_back"
+        mv "$HOME/.vimrc" "$HOME/.vimrc.bak"
         echo -e "${Blue}BackUp $HOME/.vimrc${Color_off}"
     fi
 
     if [[ -d "$HOME/.vim" ]]; then
-        if [[ "$(readlink $HOME/.vim)" =~ \.VimWeb$ ]]; then
-            echo -e "${Blue}Installed VimWeb for vim${Color_off}"
+        if [[ "$(readlink $HOME/.vim)" =~ \.vim\.conf$ ]]; then
+            echo -e "${Blue}Installed plugins for vim${Color_off}"
         else
-            mv "$HOME/.vim" "$HOME/.vim_back"
+            mv "$HOME/.vim" "$HOME/.vim.bak"
             echo -e "${Blue}BackUp $HOME/.vim${Color_off}"
-            ln -s "$HOME/.VimWeb" "$HOME/.vim"
-            echo -e "${Blue}Installed VimWeb for vim${Color_off}"
+            ln -s "$HOME/.vim.conf" "$HOME/.vim"
+            echo -e "${Blue}Installed plugins for vim${Color_off}"
         fi
     else
-        ln -s "$HOME/.VimWeb" "$HOME/.vim"
-        ln -s "$HOME/.VimWeb/.vimrc" "$HOME/.vimrc"
-        echo -e "${Blue}Installed VimWeb for vim${Color_off}"
+        ln -s "$HOME/.vim.conf" "$HOME/.vim"
+        ln -s "$HOME/.vim.conf/.vimrc" "$HOME/.vimrc"
+        echo -e "${Blue}Installed plugins for vim${Color_off}"
     fi
 }
 
 
 uninstall_vim () {
     if [[ -d "$HOME/.vim" ]]; then
-        if [[ "$(readlink $HOME/.vim)" =~ \.VimWeb$ ]]; then
+        if [[ "$(readlink $HOME/.vim)" =~ \.vim.conf$ ]]; then
             rm "$HOME/.vim"
-            echo -e "${Blue}Uninstall VimWeb for vim${Color_off}"
-            if [[ -d "$HOME/.vim_back" ]]; then
-                mv "$HOME/.vim_back" "$HOME/.vim"
+            echo -e "${Blue}Uninstall plugins for vim${Color_off}"
+            if [[ -d "$HOME/.vim.bak" ]]; then
+                mv "$HOME/.vim.bak" "$HOME/.vim"
                 echo -e "${Blue}Recover $HOME/.vim${Color_off}"
             fi
         fi
     fi
-    if [[ -f "$HOME/.vimrc_back" ]]; then
-        mv "$HOME/.vimrc_back" "$HOME/.vimrc"
+    if [[ -f "$HOME/.vimrc.bak" ]]; then
+        mv "$HOME/.vimrc.bak" "$HOME/.vimrc"
         echo -e "${Blue}Recover $HOME/.vimrc${Color_off}"
     fi
 }
 
 usage () {
     echo " "
-    echo " VimWeb install script : ${Version}v0.1.0"
+    echo " vim conf install script : ${Version}v0.1.0"
     echo " "
-    echo -e "  ${Blue}Install VimWeb for vim${Color_off}"
-    echo "  curl -sLf https://raw.githubusercontent.com/jaywcjlove/vim-web/master/install | bash -s -- install"
+    echo -e "  ${Blue}Install plugins for vim${Color_off}"
+    echo "  curl -sLf https://raw.githubusercontent.com/Darkbish/vim.conf/master/install.sh | bash -s -- install"
     echo " "
-    echo -e "  ${Blue}Uninstall VimWeb${Color_off}"
-    echo "  curl -sLf https://raw.githubusercontent.com/jaywcjlove/vim-web/master/install | bash -s -- uninstall"
+    echo -e "  ${Blue}Uninstall plugins${Color_off}"
+    echo "  curl -sLf https://raw.githubusercontent.com/Darkbish/vim.conf/master/install.sh | bash -s -- uninstall"
     echo " "
 }
 
@@ -80,12 +80,12 @@ need_cmd () {
 
 
 fetch_repo () {
-    if [[ -d "$HOME/.VimWeb" ]]; then
-        git --git-dir "$HOME/.VimWeb/.git" pull
-        echo -e "${Blue}Successfully update .VimWeb${Color_off}"
+    if [[ -d "$HOME/.vim.conf" ]]; then
+        git --git-dir "$HOME/.vim.conf/.git" pull
+        echo -e "${Blue}Successfully update .vim.conf${Color_off}"
     else
-        git clone https://github.com/jaywcjlove/vim-web.git "$HOME/.VimWeb"
-        echo -e "${Blue}Successfully clone .VimWeb${Color_off}"
+        git clone https://github.com/Darkbish/vim.conf.git "$HOME/.vim.conf"
+        echo -e "${Blue}Successfully clone .vim.conf${Color_off}"
     fi
 }
 
@@ -95,18 +95,18 @@ then
         uninstall)
             uninstall_vim
             exit 0
-    
+            ;; 
         install)
             need_cmd 'git'
             fetch_repo
             install_vim
             # echo -e "${Red}need'$1'(command 5 install_vim)${Color_off}"
             exit 0
-
+            ;;
         -h)
             usage
             exit 0
-
+            ;;
         *)
             usage
             exit 0
